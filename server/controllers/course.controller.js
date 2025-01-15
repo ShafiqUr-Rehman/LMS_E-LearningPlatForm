@@ -4,6 +4,7 @@ import { createCourse, getAllCourseService } from "../services/course.services.j
 import ErrorHandler from "../utilis/ErrorHandler.js";
 import redisClient from "../utilis/redis.js";
 import mongoose from "mongoose";
+import axios from "axios"
 
 export const uploadCourse = async (req, res, next) => {
     try {
@@ -280,8 +281,8 @@ export const AddAnswer = async (req, res, next) => {
                 title: courseContent.title,
             };
             try {
-                
-            // add notification later
+
+                // add notification later
                 await NotificationModel.create({
                     user: req.user._id,
                     title: "New Question Reply Received",
@@ -377,7 +378,7 @@ export const getAllCourses = async (req, res, next) => {
     try {
         await getAllCourseService(req, res, next);
     } catch (error) {
-        next(new ErrorHandler(error.message, 400));  
+        next(new ErrorHandler(error.message, 400));
     }
 };
 
@@ -402,4 +403,27 @@ export const deleteCourse = async (req, res, next) => {
     }
 };
 
+// video url generator
+export const videoUrlGenerator = async (req, res, next) => {
+    try {
+        const { videoId } = req.body;
+        if (!videoId) {
+            return res.status(400).json({ error: "videoId is required" });
+        }
+        const response = await axios.post(
+            `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+            { ttl: 300 },
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Apisecret ${process.env.VIDEO_CRAFT_API_SECRET_KEY}`,
+                },
+            }
+        );
+        res.json(response.data);
+    } catch (error) {
+        next(new ErrorHandler(error.message, 400));
+    }
+};
 

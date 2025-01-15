@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
       minlength: 6,
       select: false,
     },
@@ -109,7 +108,7 @@ userSchema.statics.validateRegister = (data) => {
       "string.email": "Provide a valid email address.",
       "string.empty": "Email is required.",
     }),
-    password: Joi.string().min(6).required().messages({
+    password: Joi.string().min(6).messages({
       "string.min": "Password must be at least 6 characters.",
       "string.empty": "Password is required.",
     }),

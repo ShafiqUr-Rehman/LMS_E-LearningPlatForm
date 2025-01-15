@@ -226,20 +226,12 @@ export const socialAuth = async (req, res, next) => {
 // Update User Info
 export const updateUserInfo = async (req, res, next) => {
     try {
-        const { name, email } = req.body;
+        const { name } = req.body;
         const userId = req.user?._id;
         const user = await User.findById(userId);
         if (!user) {
             return next(new ErrorHandler("User not found", 404));
         }
-        if (email && email !== user.email) {
-            const emailExists = await User.findOne({ email });
-            if (emailExists) {
-                return next(new ErrorHandler("Email already exists", 400));
-            }
-            user.email = email;
-        }
-
         // Update name if provided
         if (name) {
             user.name = name;

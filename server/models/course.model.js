@@ -68,12 +68,12 @@ const courseSchema = new mongoose.Schema({
         required: true,
     },
     benefits: {
-        type: [String],
-        default: []
+        type: [{ title: { type: String, required: true } }],
+        default: [],
     },
     prerequisites: {
-        type: [String],
-        default: []
+        type: [{ title: { type: String, required: true } }],
+        default: [],
     },
     reviews: {
         type: [reviewSchema],
