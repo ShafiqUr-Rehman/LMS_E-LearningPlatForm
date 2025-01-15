@@ -187,10 +187,7 @@ export const updateAccessToken = async (req, res, next) => {
         // Set the new tokens in cookies and send the response
         res.cookie("access_token", accessToken, accessTokenOptions);
         res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-        res.status(200).json({
-            success: true,
-            message: "Tokens refreshed successfully",
-        });
+        next();
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }

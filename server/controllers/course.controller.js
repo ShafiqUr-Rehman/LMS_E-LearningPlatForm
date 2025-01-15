@@ -265,10 +265,10 @@ export const AddAnswer = async (req, res, next) => {
         };
 
         // Add this answer to our course
-        if (!question.questoinReplies) {
-            question.questoinReplies = [];
+        if (!question.questionReplies) {
+            question.questionReplies = [];
         }
-        question.questoinReplies.push(newAnswer);
+        question.questionReplies.push(newAnswer);
 
         // Mark the nested fields as modified
         course.markModified('courseData');
