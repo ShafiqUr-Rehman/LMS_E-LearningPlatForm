@@ -99,7 +99,7 @@ const AllUsers: FC<Props> = ({ isTeam }) => {
         return (
           <>
             <a href={`mailto:${params.row.email}`}>
-              <AiOutlineMail className="dark:text-white text-black" size={20} />
+              <AiOutlineMail className="dark:text-white text-black mt-4" size={20} />
             </a>
           </>
         );

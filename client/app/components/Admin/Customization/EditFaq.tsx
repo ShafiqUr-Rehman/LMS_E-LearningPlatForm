@@ -2,7 +2,7 @@ import { styles } from "@/app/styles/style";
 import {
     useEditLayoutMutation,
     useGetHeroDataQuery,
-} from "@/redux/features/layout/layout";
+} from "@/redux/features/layout/layoutApi";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -20,20 +20,21 @@ const EditFaq = (props: Props) => {
     useEditLayoutMutation();
 
   useEffect(() => {
-    if (data) {
+    if (data && data.layout && data.layout.faq) {
       setQuestions(data.layout.faq);
     }
+  }, [data]);
 
+  useEffect(() => {
     if (layoutSuccess) {
       refetch();
-      toast.success("FAQ updated successfully");
     }
 
     if (error && "data" in error) {
       const errorData = error as any;
-      toast.error(errorData?.data.message);
+      toast.error(errorData?.data?.message || "An error occurred");
     }
-  }, [data, error, layoutSuccess, refetch]);
+  }, [error, layoutSuccess, refetch]);
 
   const toggleQuestion = (id: any) => {
     setQuestions((prevQuestions) =>
@@ -54,37 +55,53 @@ const EditFaq = (props: Props) => {
   };
 
   const newFaqHandler = () => {
+    const newId = Date.now().toString();
     setQuestions([
       ...questions,
       {
+        _id: newId,
         question: "",
         answer: "",
+        active: true,
       },
     ]);
   };
 
   const areQuestionsUnchanged = (
-    originalQuestions: any[],
+    originalQuestions: any[] | undefined,
     newQuestions: any[]
   ) => {
-    return JSON.stringify(originalQuestions) === JSON.stringify(newQuestions);
+    if (!originalQuestions) return false;
+    if (originalQuestions.length !== newQuestions.length) return false;
+    return originalQuestions.every((origQ, index) => {
+      const newQ = newQuestions[index];
+      return origQ.question === newQ.question && origQ.answer === newQ.answer;
+    });
   };
 
-  const isAnyQuestionEmpty = (question: any[]) => {
-    return question.some((q) => q.question === "" || q.answer === "");
+  const isAnyQuestionEmpty = (questions: any[]) => {
+    return questions.some((q) => q.question.trim() === "" || q.answer.trim() === "");
   };
 
   const handleEdit = async () => {
     if (
-      !areQuestionsUnchanged(data.layout.faq, questions) &&
+      !areQuestionsUnchanged(data?.layout?.faq, questions) &&
       !isAnyQuestionEmpty(questions)
     ) {
-      await editLayout({
-        type: "FAQ",
-        faq: questions,
-      });
+      try {
+        await editLayout({
+          type: "FAQ",
+          faq: questions.map(({ _id, question, answer }) => ({ _id, question, answer })),
+        }).unwrap();
+      } catch (err) {
+        toast.error("Failed to update FAQ");
+      }
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-[90%] 800px:w-[80%] m-auto mt-[120px]">

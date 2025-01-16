@@ -54,7 +54,7 @@ const AllCourses = (props: Props) => {
         return (
           <>
             <Link href={`/admin/edit-course/${params.row.id}`}>
-              <FiEdit2 className="dark:text-white text-black" size={20} />
+              <FiEdit2 className="dark:text-white text-black mt-4 items-center " size={20} />
             </Link>
           </>
         );

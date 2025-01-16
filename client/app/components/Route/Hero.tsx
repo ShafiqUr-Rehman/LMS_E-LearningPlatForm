@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetHeroDataQuery } from "@/redux/features/layout/layout";
+import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

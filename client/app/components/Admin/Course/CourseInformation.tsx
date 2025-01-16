@@ -1,5 +1,5 @@
 import { styles } from "@/app/styles/style";
-import { useGetHeroDataQuery } from "@/redux/features/layout/layout";
+import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
 import { FC, useEffect, useState } from "react";
 
 type Props = {

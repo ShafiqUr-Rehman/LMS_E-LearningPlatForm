@@ -13,16 +13,18 @@ export const createLayout = async (req, res, next) => {
                 folder: "layout",
             });
             const banner = {
-                img: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                },
-                title,
-                subTitle,
+                banner: {
+                    img: {
+                        public_id: myCloud.public_id,
+                        url: myCloud.secure_url,
+                    },
+                    title,
+                    subTitle,
+                }
             };
             await layoutModel.create({ type, banner });
         } else if (type === "FAQ") {
-            
+
             const { faq } = req.body;
             if (!Array.isArray(faq)) {
                 return next(new ErrorHandler("FAQ must be an array of objects", 400));
@@ -52,82 +54,125 @@ export const createLayout = async (req, res, next) => {
 };
 
 
+
+
+
+
+
+
 // Edit layout
 export const editLayout = async (req, res, next) => {
-    try {
-        const { type, id } = req.body;
+  try {
+    const { type } = req.body;
 
-        if (!id) {
-            return next(new ErrorHandler("Layout ID is required", 400));
-        }
+    if (type === "Banner") {
+      const { image, title, subtitle } = req.body;
+      
+      let bannerData = await layoutModel.findOne({ type: "Banner" });
 
-        const layout = await layoutModel.findById(id);
+      if (!bannerData) {
+        bannerData = new layoutModel({ type: "Banner", banner: {} });
+      }
 
-        if (!layout) {
-            return next(new ErrorHandler("Layout not found", 404));
-        }
+      let imageData = bannerData.banner.img || {};
 
-        if (type === "Banner") {
-            const { img, title, subTitle } = req.body;
-
-            if (img) {
-                // Remove existing image from Cloudinary
-                if (layout.banner?.img?.public_id) {
-                    await cloudinary.v2.uploader.destroy(layout.banner.img.public_id);
-                }
-
-                // Upload new image to Cloudinary
-                const myCloud = await cloudinary.v2.uploader.upload(img, {
-                    folder: "layout",
-                });
-
-                layout.banner.img = {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                };
-            }
-
-            if (title) layout.banner.title = title;
-            if (subTitle) layout.banner.subTitle = subTitle;
-
-        } else if (type === "FAQ") {
-            const { faq } = req.body;
-
-            if (!Array.isArray(faq)) {
-                return next(new ErrorHandler("FAQ must be an array of objects", 400));
-            }
-
-            layout.faq = faq;
-
-        } else if (type === "Categories") {
-            const { categories } = req.body;
-
-            if (!Array.isArray(categories)) {
-                return next(new ErrorHandler("Categories must be an array of objects", 400));
-            }
-
-            layout.categories = categories;
-
-        } else {
-            return next(new ErrorHandler("Invalid layout type", 400));
-        }
-
-        await layout.save();
-
-        res.status(200).json({
-            success: true,
-            message: "Layout updated successfully!",
+      if (image && !image.startsWith("https")) {
+        // Upload new image to Cloudinary
+        const uploadedImage = await cloudinary.v2.uploader.upload(image, {
+          folder: "layout",
         });
+        imageData = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.secure_url,
+        };
+      }
 
-    } catch (error) {
-        console.error('Error details:', error);
-        return next(new ErrorHandler(error.message, 500));
+      bannerData.banner = {
+        img: imageData,
+        title: title || '',
+        subTitle: subtitle || '',
+      };
+
+      await bannerData.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Banner updated successfully",
+      });
+    } 
+    else if (type === "FAQ") {
+      const { faq } = req.body;
+      const faqData = await layoutModel.findOne({ type: "FAQ" });
+
+      const faqItems = faq.map((item) => ({
+        question: item.question,
+        answer: item.answer,
+      }));
+
+      if (faqData) {
+        await layoutModel.findByIdAndUpdate(faqData._id, {
+          type: "FAQ",
+          faq: faqItems,
+        });
+      } else {
+        await layoutModel.create({
+          type: "FAQ",
+          faq: faqItems,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "FAQ updated successfully",
+      });
+    } 
+    else if (type === "Categories") {
+      const { categories } = req.body;
+      const categoriesData = await layoutModel.findOne({
+        type: "Categories",
+      });
+
+      const categoriesItems = categories.map((item) => ({
+        title: item.title,
+      }));
+
+      if (categoriesData) {
+        await layoutModel.findByIdAndUpdate(categoriesData._id, {
+          type: "Categories",
+          categories: categoriesItems,
+        });
+      } else {
+        await layoutModel.create({
+          type: "Categories",
+          categories: categoriesItems,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Categories updated successfully",
+      });
+    } 
+    else {
+      return next(new ErrorHandler("Invalid layout type", 400));
     }
-    
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
 };
+  
+
+
+
+
+
+
+
+
+
+
 
 // get layout by type
-
 export const getLayoutByType = async (req, res, next) => {
     try {
         const { type } = req.body;
