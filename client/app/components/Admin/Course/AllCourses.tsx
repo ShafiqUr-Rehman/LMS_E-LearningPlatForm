@@ -17,7 +17,7 @@ import Loader from "../../Loader/Loader";
 type Props = {};
 
 const AllCourses = (props: Props) => {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [courseId, setCourseId] = useState("");
   const { isLoading, data, refetch } = useGetAllCoursesQuery(
@@ -44,7 +44,7 @@ const AllCourses = (props: Props) => {
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "title", headerName: "Course Title", flex: 1 },
     { field: "ratings", headerName: "Ratings", flex: 0.5 },
-    { field: "purchased", headerName: "Purchased", flex: 0.5 },
+    { field: "purchase", headerName: "purchase", flex: 0.5 },
     { field: "created_at", headerName: "Created At", flex: 0.5 },
     {
       field: "  ",
@@ -93,13 +93,13 @@ const AllCourses = (props: Props) => {
           id: course._id,
           title: course.name,
           ratings: course.ratings,
-          purchased: course.purchased,
+          purchase: course.purchase,
           created_at: format(course.createdAt),
         })
       );
   }
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     const id = courseId;
     await deleteCourse(id);
   };
@@ -109,90 +109,40 @@ const AllCourses = (props: Props) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <Box m="20px">
-          <Box
-            m="40px 0 0 0"
-            height="80vh"
-            sx={{
-              "& .MuiDataGrid-root": {
-                border: "none",
-                outline: "none",
-              },
-              "& .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon": {
-                color: theme === "dark" ? "#fff" : "#000",
-              },
-              "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000",
-              },
-              "& .MuiDataGrid-row": {
-                color: theme === "dark" ? "#fff" : "#000",
-                borderBottom:
-                  theme === "dark"
-                    ? "1px solid #ffffff30!important"
-                    : "1px solid #ccc!important",
-              },
-              "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000",
-              },
-              "& .MuiDataGrid-cell": {
-                borderBottom: "none!important",
-              },
-              "& .name-column--cell": {
-                color: theme === "dark" ? "#fff" : "#000",
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
-                borderBottom: "none",
-                color: theme === "dark" ? "#fff" : "#000",
-              },
-              "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                color: theme === "dark" ? "#fff" : "#000",
-                borderTop: "none",
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
-              },
-              "& .MuiCheckbox-root": {
-                color:
-                  theme === "dark" ? `#b7ebde !important` : `#000 !important`,
-              },
-              "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `#fff !important`,
-              },
-            }}
-          >
-            <DataGrid checkboxSelection rows={rows} columns={columns} />
-          </Box>
-          {open && (
-            <Modal
-              open={open}
-              onClose={() => setOpen(!open)}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[450px] bg-white dark:bg-slate-900 rounded-[8px] shadow p-4 outline-none">
-                <h1 className={`${styles.title}`}>
-                  Are you sure you want to delete this course?
-                </h1>
-                <div className="flex w-full items-center justify-between mb-6 mt-4">
-                  <div
-                    className={`${styles.button} !w-[120px] h-[30px] bg-[#47d097]`}
-                    onClick={() => setOpen(!open)}
-                  >
-                    Cancel
-                  </div>
-                  <div
-                    className={`${styles.button} !w-[120px] h-[30px] bg-[#d63f3f]`}
-                    onClick={handleDelete}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </Box>
-            </Modal>
-          )}
-        </Box>
+        <Box
+        m="40px 0 0 0"
+        height="80vh"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+            outline: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC", // Background color with theme check
+            borderBottom: "none",
+            color: theme === "dark" ? "#E2E8F0" : "#000000", // Text color for column headers
+            fontWeight: "bold",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0", // Virtual scroller background color
+          },
+          "& .MuiDataGrid-footerContainer": {
+            color: theme === "dark" ? "#E2E8F0" : "#000000", // Footer text color
+            borderTop: "none",
+            backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC", // Footer background color
+          },
+          "& .MuiDataGrid-row": {
+            color: theme === "dark" ? "#ffffff" : "#000000", // Row text color
+            borderBottom:
+              theme === "dark"
+                ? "1px solid #ffffff30"
+                : "1px solid #ccc", // Border color for rows
+          },
+        }}
+      >
+        <DataGrid checkboxSelection rows={rows} columns={columns} />
+      </Box>
+      
       )}
     </div>
   );

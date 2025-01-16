@@ -77,6 +77,7 @@ const courseSchema = new mongoose.Schema({
     },
     reviews: {
         type: [reviewSchema],
+    
         default: []
     },
     courseData: {

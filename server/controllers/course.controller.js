@@ -4,7 +4,7 @@ import { createCourse, getAllCourseService } from "../services/course.services.j
 import ErrorHandler from "../utilis/ErrorHandler.js";
 import redisClient from "../utilis/redis.js";
 import mongoose from "mongoose";
-import axios from "axios"
+import axios from "axios";
 
 export const uploadCourse = async (req, res, next) => {
     try {
@@ -407,8 +407,14 @@ export const deleteCourse = async (req, res, next) => {
 export const videoUrlGenerator = async (req, res, next) => {
     try {
         const { videoId } = req.body;
+
         if (!videoId) {
             return res.status(400).json({ error: "videoId is required" });
+        }
+
+        const apiSecretKey = process.env.VIDEO_CRAFT_API_SECRET_KEY;
+        if (!apiSecretKey) {
+            return res.status(500).json({ error: "API Secret Key is not configured" });
         }
         const response = await axios.post(
             `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
@@ -417,13 +423,19 @@ export const videoUrlGenerator = async (req, res, next) => {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: `Apisecret ${process.env.VIDEO_CRAFT_API_SECRET_KEY}`,
+                    Authorization: `Apisecret ${apiSecretKey}`,
                 },
             }
         );
-        res.json(response.data);
+
+        res.status(200).json(response.data);
     } catch (error) {
-        next(new ErrorHandler(error.message, 400));
+        console.error("Error fetching video OTP:", error.response?.data || error.message);
+
+        const errorMessage = error.response?.data?.message || "Error fetching video OTP";
+        next(new ErrorHandler(errorMessage, 400));
     }
 };
+
+
 

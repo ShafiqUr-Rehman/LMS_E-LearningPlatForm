@@ -2,7 +2,7 @@ import { styles } from "@/app/styles/style";
 import CoursePlayer from "../../../utlis/CoursePlayer";
 import Ratings from "../../../utlis/Ratings";
 import { FC } from "react";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { IoCheckmarkDoneOutline } from "react-icons/io5"; 
 
 type Props = {
   active: number;

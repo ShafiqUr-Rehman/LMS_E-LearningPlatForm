@@ -2,7 +2,7 @@ import { useGetAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 import { useGetAllOrdersQuery } from "@/redux/features/orders/orderApi";
 import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
 import { Box } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AiOutlineMail } from "react-icons/ai";
@@ -14,20 +14,20 @@ type Props = {
 };
 
 const AllInvoices = ({ isDashboard }: Props) => {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const { isLoading, data } = useGetAllOrdersQuery({});
   const { data: usersData } = useGetAllUsersQuery({});
   const { data: coursesData } = useGetAllCoursesQuery({});
 
-  const [orderData, setOrderData] = useState<any>([]);
+  const [orderData, setOrderData] = useState<any[]>([]);
 
   useEffect(() => {
-    if (data) {
+    if (data && usersData && coursesData) {
       const temp = data.orders.map((item: any) => {
-        const user = usersData?.users.find(
+        const user = usersData.users.find(
           (user: any) => user._id === item.userId
         );
-        const course = coursesData?.courses.find(
+        const course = coursesData.courses.find(
           (course: any) => course._id === item.courseId
         );
         return {
@@ -42,7 +42,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
     }
   }, [data, usersData, coursesData]);
 
-  const columns: any = [
+  const columns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 0.3 },
     { field: "userName", headerName: "Name", flex: isDashboard ? 0.6 : 0.5 },
     ...(isDashboard
@@ -56,36 +56,29 @@ const AllInvoices = ({ isDashboard }: Props) => {
       ? [{ field: "created_at", headerName: "Created At", flex: 0.5 }]
       : [
           {
-            field: " ",
+            field: "emailAction",
             headerName: "Email",
             flex: 0.2,
-            renderCell: (params: any) => {
-              return (
-                <a href={`mailto:${params.row.userEmail}`}>
-                  <AiOutlineMail
-                    className="dark:text-white text-black"
-                    size={20}
-                  />
-                </a>
-              );
-            },
+            renderCell: (params: any) => (
+              <a href={`mailto:${params.row.userEmail}`}>
+                <AiOutlineMail
+                  className="dark:text-white text-black"
+                  size={20}
+                />
+              </a>
+            ),
           },
         ]),
   ];
 
-  const rows: any = [];
-
-  orderData &&
-    orderData.forEach((item: any) => {
-      rows.push({
-        id: item._id,
-        userName: item.userName,
-        userEmail: item.userEmail,
-        title: item.title,
-        price: item.price,
-        created_at: format(item.createdAt),
-      });
-    });
+  const rows = orderData.map((item) => ({
+    id: item._id,
+    userName: item.userName,
+    userEmail: item.userEmail,
+    title: item.title,
+    price: item.price,
+    created_at: format(item.createdAt),
+  }));
 
   return (
     <div className={!isDashboard ? "mt-[120px]" : "mt-[0px]"}>
@@ -96,7 +89,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
           <Box
             m={isDashboard ? "0" : "40px 0 0 0"}
             height={isDashboard ? "35vh" : "82.49vh"}
-            overflow={"hidden"}
+            overflow="hidden"
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
@@ -147,10 +140,15 @@ const AllInvoices = ({ isDashboard }: Props) => {
             }}
           >
             <DataGrid
-              checkboxSelection={isDashboard ? false : true}
+              checkboxSelection={!isDashboard}
               rows={rows}
               columns={columns}
-            //   components={isDashboard ? {} : { Toolbar: GridToolbar }}
+              slots={isDashboard ? undefined : { toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
             />
           </Box>
         </Box>
@@ -160,3 +158,4 @@ const AllInvoices = ({ isDashboard }: Props) => {
 };
 
 export default AllInvoices;
+

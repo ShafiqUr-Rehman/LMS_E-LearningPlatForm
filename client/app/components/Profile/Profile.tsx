@@ -2,7 +2,7 @@ import { useLogoutQuery } from "@/redux/features/auth/authApi";
 import { useGetUserAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 import { signOut } from "next-auth/react";
 import { FC, useEffect, useState } from "react";
-// import CourseCard from "../Course/CourseCard";
+import CourseCard from "../../components/Admin/Course/CourseCard";
 import ChangePassword from "./ChangePassword";
 import ProfileInfo from "./ProfileInfo";
 import SidebarProfile from "./SidebarProfile";
@@ -61,7 +61,7 @@ const Profile: FC<Props> = ({ user }) => {
           avatar={avatar}
         />
       </div>
-      {/* <div className="w-full h-full bg-transparent mt-20">
+      <div className="w-full h-full bg-transparent mt-20">
         {active === 1 && <ProfileInfo user={user} avatar={avatar} />}
         {active === 2 && <ChangePassword />}
         {active === 3 && (
@@ -84,7 +84,7 @@ const Profile: FC<Props> = ({ user }) => {
             )}
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
