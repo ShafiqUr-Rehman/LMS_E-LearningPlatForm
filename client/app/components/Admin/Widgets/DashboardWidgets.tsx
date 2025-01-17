@@ -1,5 +1,5 @@
 import {
-    useGetOrdersAnalyticsQuery,
+    useGetOrderAnalyticsQuery,
     useGetUserAnalyticsQuery,
   } from "@/redux/features/analytics/analyticsApi";
   import { Box, CircularProgress } from "@mui/material";
@@ -48,7 +48,7 @@ import {
   
     const { data, isLoading } = useGetUserAnalyticsQuery({});
     const { data: orderData, isLoading: orderLoading } =
-      useGetOrdersAnalyticsQuery({});
+      useGetOrderAnalyticsQuery({});
   
     useEffect(() => {
       if (isLoading && orderLoading) {

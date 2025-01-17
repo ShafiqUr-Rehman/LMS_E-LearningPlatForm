@@ -7,6 +7,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
+
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
@@ -35,10 +36,12 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   }
 
   useEffect(() => {
-    if (data) {
+    if (data && data.notifications) {
       setNotifications(
         data.notifications.filter((item: any) => item.status === "unread")
       );
+    } else {
+      setNotifications([]);
     }
 
     if (isSuccess) {
@@ -67,7 +70,7 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
       >
         <IoMdNotificationsOutline className="text-2xl cursor-pointer text-black dark:text-white" />
         <span className="absolute -top-2 -right-2 bg-[#3ccba0] rounded-full w-5 h-5 text-[12px] flex items-center justify-center text-white">
-          {notifications && notifications.length > 0}
+          {notifications.length}
         </span>
       </div>
       {open && (
@@ -76,29 +79,31 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
             Notifications
           </h5>
 
-          {notifications &&
+          {notifications.length > 0 ? (
             notifications.map((item: any, index: number) => (
-              <>
-                <div className="dark:bg-[#2d3a4ea1] bg-[#00000013] font-Poppins border-b dark:border-b-[#ffffff47] border-b-[#0000000f]">
-                  <div className="w-full flex items-center justify-between p-2">
-                    <p className="text-black dark:text-white">{item.title}</p>
-                    <p
-                      className="text-black dark:text-white cursor-pointer"
-                      onClick={() => handleNotificationStatusChange(item._id)}
-                    >
-                      Mark as read
-                    </p>
-                  </div>
-                  <p className="px-2 text-black dark:text-white">
-                    {item.message}
-                  </p>
-                  <p className="p-2 text-black dark:text-white text-[14px]">
-                    {format(item.createdAt)}
+              <div key={item._id} className="dark:bg-[#2d3a4ea1] bg-[#00000013] font-Poppins border-b dark:border-b-[#ffffff47] border-b-[#0000000f]">
+                <div className="w-full flex items-center justify-between p-2">
+                  <p className="text-black dark:text-white">{item.title}</p>
+                  <p
+                    className="text-black dark:text-white cursor-pointer"
+                    onClick={() => handleNotificationStatusChange(item._id)}
+                  >
+                    Mark as read
                   </p>
                 </div>
-              </>
-            ))}
+                <p className="px-2 text-black dark:text-white">
+                  {item.message}
+                </p>
+                <p className="p-2 text-black dark:text-white text-[14px]">
+                  {format(item.createdAt)}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-black dark:text-white p-4">No new notifications</p>
+          )}
 
+          {/* Example notifications (you may want to remove these) */}
           <div className="dark:bg-[#2d3a4ea1] bg-[#00000013] font-Poppins border-b dark:border-b-[#ffffff47] border-b-[#0000000f]">
             <div className="w-full flex items-center justify-between p-2">
               <p className="text-black dark:text-white">
@@ -143,3 +148,4 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
 };
 
 export default DashboardHeader;
+

@@ -4,11 +4,11 @@ import { generateLast12MonthsData } from "../utilis/anaylatics.generator.js";
 import Course from "../models/course.model.js";
 import OrderModel from "../models/order.model.js";
 
-// get User analytics --only Admins
+// Get User Analytics -- Admins Only
 export const getUserAnalytics = async (req, res, next) => {
     try {
         const users = await generateLast12MonthsData(User);
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             users,
         });
@@ -17,24 +17,24 @@ export const getUserAnalytics = async (req, res, next) => {
     }
 };
 
-// get Course analytics --only Admins
+// Get Course Analytics -- Admins Only
 export const getCourseAnalytics = async (req, res, next) => {
     try {
-        const coures = await generateLast12MonthsData(Course);
-        res.status(201).json({
+        const courses = await generateLast12MonthsData(Course); // Corrected `coures` to `courses`
+        res.status(200).json({
             success: true,
-            coures,
+            courses, // Corrected `coures` to `courses`
         });
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
 };
 
-// get Orders analytics --only Admins
+// Get Orders Analytics -- Admins Only
 export const getOrderAnalytics = async (req, res, next) => {
     try {
         const orders = await generateLast12MonthsData(OrderModel);
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             orders,
         });

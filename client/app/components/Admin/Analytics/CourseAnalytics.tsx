@@ -10,30 +10,20 @@ import {
   YAxis,
 } from "recharts";
 import Loader from "../../Loader/Loader";
+
 type Props = {};
 
 const CourseAnalytics = (props: Props) => {
   const { data, isLoading } = useGetCourseAnalyticsQuery({});
 
-  //   const analyticsData = [
-  //     { name: "June 2023", uv: 3 },
-  //     { name: "July 2023", uv: 2 },
-  //     { name: "August 2023", uv: 5 },
-  //     { name: "September 2023", uv: 7 },
-  //     { name: "October 2023", uv: 2 },
-  //     { name: "November 2023", uv: 5 },
-  //     { name: "December 2023", uv: 7 },
-  //   ];
-
+  // Prepare analytics data for the chart
   const analyticsData: any = [];
-
-  data &&
-    data.courses.last12Months.forEach((item: any) => {
-      analyticsData.push({
-        name: item.month,
-        uv: item.count,
-      });
+  data?.courses?.last12Months?.forEach((item: any) => {
+    analyticsData.push({
+      name: item.month, // Month-Year (e.g., "Dec 2024")
+      uv: item.count,   // Count of documents
     });
+  });
 
   const minValue = 0;
 

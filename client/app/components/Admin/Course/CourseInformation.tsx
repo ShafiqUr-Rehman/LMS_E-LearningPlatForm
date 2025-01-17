@@ -22,8 +22,13 @@ const CourseInformation: FC<Props> = ({
   useEffect(() => {
     if (data) {
       setCategories(data.layout.categories);
+      console.log("Categories set:", data.layout.categories);
     }
   }, [data]);
+
+  useEffect(() => {
+    console.log("CourseInfo updated:", courseInfo);
+  }, [courseInfo]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -177,12 +182,14 @@ const CourseInformation: FC<Props> = ({
                 setCourseInfo({ ...courseInfo, category: e.target.value })
               }
             >
+              <option value="">Select a category</option>
               {categories.map((category: any) => (
                 <option key={category._id} value={category.title}>
                   {category.title}
                 </option>
               ))}
-            </select>
+              </select>
+              {/* {console.log("Rendering categories:", categories)} */}
           </div>
         </div>
         <br />
@@ -242,7 +249,7 @@ const CourseInformation: FC<Props> = ({
             {courseInfo.thumbnail ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={courseInfo.thumbnail}
+                src={courseInfo.thumbnail || "/placeholder.svg"}
                 alt="thumbnail"
                 className="max-h-full w-full object-cover"
               />
@@ -266,3 +273,4 @@ const CourseInformation: FC<Props> = ({
 };
 
 export default CourseInformation;
+

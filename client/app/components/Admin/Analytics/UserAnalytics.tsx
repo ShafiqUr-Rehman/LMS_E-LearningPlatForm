@@ -17,16 +17,14 @@ type Props = {
 
 const UserAnalytics: FC<Props> = ({ isDashboard }) => {
   const { data, isLoading } = useGetUserAnalyticsQuery({});
+  
+  // Prepare data for the chart
+  const analyticsData =
+    data?.users?.last12Months?.map((item: any) => ({
+      name: item.month, // Month-Year (e.g., "Dec 2024")
+      count: item.count, // Document count
+    })) || [];
 
-  const analyticsData: any = [];
-
-  data &&
-    data.users.last12Months.forEach((item: any) => {
-      analyticsData.push({
-        name: item.month,
-        uv: item.count,
-      });
-    });
   return (
     <>
       {isLoading ? (
@@ -49,7 +47,7 @@ const UserAnalytics: FC<Props> = ({ isDashboard }) => {
             </h1>
             {!isDashboard && (
               <p className={`${styles.label} px-5`}>
-                Last 12 months analytics data{" "}
+                Last 12 months analytics data
               </p>
             )}
           </div>
@@ -77,7 +75,7 @@ const UserAnalytics: FC<Props> = ({ isDashboard }) => {
                 <Tooltip />
                 <Area
                   type="monotone"
-                  dataKey="count"
+                  dataKey="count" // Use 'count' to match the backend data
                   stroke="#4d62d9"
                   fill="#4d62d9"
                 />

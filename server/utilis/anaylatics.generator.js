@@ -1,4 +1,3 @@
-
 async function generateLast12MonthsData(model) {
     const last12Months = [];
     const currentDate = new Date();
@@ -7,10 +6,6 @@ async function generateLast12MonthsData(model) {
     for (let i = 12; i > 0; i--) {
         const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i + 1, 0);
         const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-        
-         // Log the dates to see if they are correct
-        //  console.log("Start Date:", startDate);
-        //  console.log("End Date:", endDate);
 
         // Format the date as "MMM YYYY" (e.g., "Dec 2024")
         const monthYear = endDate.toLocaleDateString('default', {
@@ -32,4 +27,3 @@ async function generateLast12MonthsData(model) {
 }
 
 export { generateLast12MonthsData };
-

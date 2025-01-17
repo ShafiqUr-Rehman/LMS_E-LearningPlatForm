@@ -1,5 +1,5 @@
 import { styles } from "@/app/styles/style";
-import { useGetOrdersAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
+import { useGetOrderAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
 import {
   CartesianGrid,
   Legend,
@@ -17,14 +17,14 @@ type Props = {
 };
 
 export default function OrdersAnalytics({ isDashboard }: Props) {
-  const { data, isLoading } = useGetOrdersAnalyticsQuery({});
+  const { data, isLoading } = useGetOrderAnalyticsQuery({});
 
-  const analyticsData: any = [];
-
-  data &&
-    data.orders.last12Months.forEach((item: any) => {
-      analyticsData.push({ name: item.name, Count: item.count });
-    });
+  // Prepare data for the chart
+  const analyticsData =
+    data?.orders?.last12Months?.map((item: any) => ({
+      name: item.name, // Month-Year (e.g., "Dec 2024")
+      count: item.count, // Document count
+    })) || [];
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function OrdersAnalytics({ isDashboard }: Props) {
             </h1>
             {!isDashboard && (
               <p className={`${styles.label} px-5`}>
-                Last 12 months analytics data{" "}
+                Last 12 months analytics data
               </p>
             )}
           </div>
@@ -73,7 +73,7 @@ export default function OrdersAnalytics({ isDashboard }: Props) {
                 <YAxis />
                 <Tooltip />
                 {!isDashboard && <Legend />}
-                <Line type="monotone" dataKey="Count" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="count" stroke="#82ca9d" /> {/* Changed Count to count */}
               </LineChart>
             </ResponsiveContainer>
           </div>
