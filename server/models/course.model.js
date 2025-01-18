@@ -39,10 +39,9 @@ const courseDataSchema = new mongoose.Schema({
 
 const courseSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String,  },
     categories : {
         type : String,
-        required : true, 
    },
     price: {
         type: Number,
@@ -72,11 +71,11 @@ const courseSchema = new mongoose.Schema({
         required: true,
     },
     benefits: {
-        type: [{ title: { type: String, required: true } }],
+        type: [{ title: { type: String,} }],
         default: [],
     },
     prerequisites: {
-        type: [{ title: { type: String, required: true } }],
+        type: [{ title: { type: String,} }],
         default: [],
     },
     reviews: {

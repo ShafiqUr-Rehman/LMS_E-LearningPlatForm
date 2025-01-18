@@ -12,6 +12,9 @@ import { getAllOrderService } from "../services/order.services.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
+
+
 export const createOrder = async (req, res, next) => {
     try {
         const { courseId, userId } = req.body;
@@ -25,17 +28,6 @@ export const createOrder = async (req, res, next) => {
         if (!user) {
             return next(new ErrorHandler("User not found", 404));
         }
-          // Check if user already purchased the course
-          const courseAlreadyPurchased = user.courses.some(
-              (course) => course.course_id.toString() === courseId
-          );
-  
-          if (courseAlreadyPurchased) {
-              return res.status(400).json({
-                  success: false,
-                  message: 'You have already purchased this course.',
-              });
-          }
 
         const orderData = {
             courseId: course._id,
@@ -46,6 +38,10 @@ export const createOrder = async (req, res, next) => {
             },
         };
 
+        // Create the order
+        const newOrder = await OrderModel.create(orderData);
+
+        // Send confirmation email after order is successfully created
         const mailData = {
             order: {
                 _id: course._id.toString().slice(0, 6),
@@ -78,20 +74,18 @@ export const createOrder = async (req, res, next) => {
         });
 
         if (!user.courses.some((c) => c.course_id === course._id.toString())) {
-            user.courses.push({ course_id: course._id.toString() }); // Proper structure
+            user.courses.push({ course_id: course._id.toString() });
             await user.save();
         }
+
+        course.purchase = course.purchase ? course.purchase + 1 : 1;
+        await course.save();
 
         await NotificationModel.create({
             user: user._id,
             title: "New Order",
             message: `You have successfully ordered the course: ${course.name}.`,
         });
-
-        course.purchase = course.purchase ? course.purchase + 1 : 1;
-        await course.save();
-
-        const newOrder = await OrderModel.create(orderData);
 
         res.status(201).json({
             success: true,
@@ -102,6 +96,10 @@ export const createOrder = async (req, res, next) => {
         return next(new ErrorHandler(error.message || "Internal Server Error", 500));
     }
 };
+
+
+
+
 
 //Get all Orders --only Admin
 export const getAllOrder = async (req, res, next) => {

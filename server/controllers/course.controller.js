@@ -152,10 +152,9 @@ export const getAllCourse = async (req, res, next) => {
 
 
 // get course content --only for valid users
-
 export const getCourseByUser = async (req, res, next) => {
     try {
-        const userCourseList = req.user?.courses; // Courses from user's profile
+        const userCourseList = req.user?.courses;
         const courseId = req.params.id;
 
         console.log("Requested Course ID:", courseId);
