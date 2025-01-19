@@ -1,6 +1,6 @@
 import { useGetUserAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 import { useEffect, useState } from "react";
-import CourseCard from "../Course/CourseCard";
+import CourseCard from "../Admin/Course/CourseCard";
 
 type Props = {};
 
