@@ -8,7 +8,7 @@ class ErrorHandler extends Error {
 
 export const handleMongoError = (err) => {
     if (err.name === 'MongoError' && err.code === 11000) {
-        return new ErrorHandler('Duplicate field value entered', 400);
+        return new ErrorHandler('Duplicate field value entered', 400);  // new keyword is used to create a object
     }
     if (err.name === 'ValidationError') {
         return new ErrorHandler('Validation Error', 400);

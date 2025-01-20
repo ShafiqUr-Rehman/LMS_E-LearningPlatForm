@@ -4,7 +4,7 @@ export const layoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getHeroData: builder.query({
         query: (type) => ({
-          url: `get-layout`,
+          url: "get-layout",
           method: "POST",
           body: { type },
           credentials: "include" as const,

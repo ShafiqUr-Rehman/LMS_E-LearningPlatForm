@@ -1,7 +1,7 @@
 // redis.js
 import { createClient } from 'redis';
 
-const redisClient = createClient({
+const redisClient = createClient({  // redisClient -> it should be redis
   url: process.env.REDIS_URL,
 });
 
@@ -11,4 +11,4 @@ await redisClient.connect().then(() => {
   console.log('Redis connected successfully');
 });
 
-export default redisClient;
+export default redisClient;  // jis naam se export kr rhy hain isi name se import krna hai

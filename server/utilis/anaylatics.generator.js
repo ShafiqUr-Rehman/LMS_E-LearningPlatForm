@@ -9,7 +9,7 @@ async function generateLast12MonthsData(model) {
 
         // Format the date as "MMM YYYY" (e.g., "Dec 2024")
         const monthYear = endDate.toLocaleDateString('default', {
-            month: 'short',
+            month: 'short',  // MMM ->  JAN
             year: 'numeric',
         });
 

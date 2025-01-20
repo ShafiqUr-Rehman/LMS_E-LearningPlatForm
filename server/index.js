@@ -47,7 +47,7 @@ app.use("/server/v1", notificationRouter);
 app.use("/server/v1", analyticsRouter);
 app.use("/server/v1", layoutRouter);
 
-
+// unknown routes
 app.all("*", (req, res, next) => {
   next(new ErrorHandler(`Cannot find ${req.originalUrl} on this server!`, 404));
 });
@@ -61,7 +61,7 @@ app.all("*", (req, res, next) => {
 
 
 
-// Error handling middleware
+// Error handler middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err);  // Log the full error object
 

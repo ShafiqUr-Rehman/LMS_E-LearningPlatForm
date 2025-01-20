@@ -1,26 +1,26 @@
 import ejs from "ejs";
-import path from "path";
 import ErrorHandler from "./ErrorHandler.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';   // Gets the file path for ES module.
+import { dirname, join } from 'path';  // Handles directory and file paths.
 
 dotenv.config();
+// These lines are used to manage file paths in ES Modules (since __dirname is not available by default).
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);   // Current file's path.
+const __dirname = dirname(__filename);              // Directory of the current file.
 
 const sendMail = async (options) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: process.env.SMPT_HOST,
-            port: process.env.SMPT_PORT || '587',
-            service: process.env.SMPT_SERVICE,
-            secure: process.env.SMPT_PORT === '465', // true for port 465, false for other ports
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT || '587',   // 587 = default port
+            service: process.env.SMTP_SERVICE,
+            secure: process.env.SMTP_PORT === '465', // true for port 465, false for other ports
             auth: {
-                user: process.env.SMPT_MAIL,
-                pass: process.env.SMPT_PASSWORD,
+                user: process.env.SMTP_MAIL,
+                pass: process.env.SMTP_PASSWORD,
             },
         });
 
@@ -28,8 +28,8 @@ const sendMail = async (options) => {
         let html;
 
         if (template) {
-            // Get the path to the email template file
-            const templatePath = join(__dirname, "..", "mails", template);
+            // Get the path to the email template file 
+            const templatePath = join(__dirname, "..", "mails", template); 
             // Render the email template
             html = await ejs.renderFile(templatePath, data);
         } else if (directHtml) {
@@ -39,10 +39,10 @@ const sendMail = async (options) => {
         }
 
         const mailOptions = {
-            from: process.env.SMPT_MAIL,
+            from: process.env.SMTP_MAIL,
             to: email,
             subject,
-            html,
+            html,   // simple template (.ejs file)
         };
 
         await transporter.sendMail(mailOptions);

@@ -12,7 +12,7 @@ export const courseApi = apiSlice.injectEndpoints({
     }),
     getAllCourses: builder.query({
       query: () => ({
-        url: "get-courses",
+        url: "get-courses",   // get coures without purchase
         method: "GET",
         credentials: "include" as const,
       }),
@@ -34,12 +34,12 @@ export const courseApi = apiSlice.injectEndpoints({
     }),
     getUserAllCourses: builder.query({
       query: () => ({
-        url: "get-course",     // to be sure
+        url: "get-courses",    
         method: "GET",
         credentials: "include" as const,
       }),
     }),
-    getCourseDetails: builder.query({
+    getCourseDetails: builder.query({     // details or couse by user....
       query: (id: any) => ({
         url: `get-course/${id}`,
         method: "GET",
@@ -48,7 +48,7 @@ export const courseApi = apiSlice.injectEndpoints({
     }),
     getCourseContent: builder.query({
       query: (id: any) => ({
-        url: `get-course-content/${id}`,   // pending
+        url: `get-course-content/${id}`,   
         method: "GET",
         credentials: "include" as const,
       }),

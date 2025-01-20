@@ -26,6 +26,7 @@ const Courses = (props: Props) => {
           {courses &&
             courses.map((item: any, index: number) => (
               <CourseCard item={item} key={index} />
+              
             ))}
         </div>
       </div>
