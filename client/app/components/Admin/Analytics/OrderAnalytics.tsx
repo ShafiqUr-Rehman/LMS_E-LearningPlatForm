@@ -19,12 +19,18 @@ type Props = {
 export default function OrdersAnalytics({ isDashboard }: Props) {
   const { data, isLoading } = useGetOrderAnalyticsQuery({});
 
+  // Debug: Log the data from the API to check if it's returning correctly
+  console.log("Fetched order data from API:", data);
+
   // Prepare data for the chart
-  const analyticsData =
+  const orderAnalyticsData =
     data?.orders?.last12Months?.map((item: any) => ({
       name: item.name, // Month-Year (e.g., "Dec 2024")
-      count: item.count, // Document count
+      count: item.count, // Order count
     })) || [];
+
+  // Debug: Log the orderAnalyticsData before passing it to the chart
+  console.log("Order Analytics Data:", orderAnalyticsData);
 
   return (
     <>
@@ -48,6 +54,7 @@ export default function OrdersAnalytics({ isDashboard }: Props) {
               </p>
             )}
           </div>
+          
           <div
             className={`w-full ${
               !isDashboard ? "h-[90%]" : "h-full"
@@ -60,7 +67,7 @@ export default function OrdersAnalytics({ isDashboard }: Props) {
               <LineChart
                 width={500}
                 height={300}
-                data={analyticsData}
+                data={orderAnalyticsData}
                 margin={{
                   top: 5,
                   right: 30,
@@ -73,7 +80,7 @@ export default function OrdersAnalytics({ isDashboard }: Props) {
                 <YAxis />
                 <Tooltip />
                 {!isDashboard && <Legend />}
-                <Line type="monotone" dataKey="count" stroke="#82ca9d" /> {/* Changed Count to count */}
+                <Line type="monotone" dataKey="count" stroke="#82ca9d" />
               </LineChart>
             </ResponsiveContainer>
           </div>

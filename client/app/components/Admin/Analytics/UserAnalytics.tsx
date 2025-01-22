@@ -2,12 +2,12 @@ import { styles } from "@/app/styles/style";
 import { useGetUserAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
 import { FC } from "react";
 import {
-    Area,
-    AreaChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 import Loader from "../../Loader/Loader";
 
@@ -17,12 +17,12 @@ type Props = {
 
 const UserAnalytics: FC<Props> = ({ isDashboard }) => {
   const { data, isLoading } = useGetUserAnalyticsQuery({});
-  
+
   // Prepare data for the chart
-  const analyticsData =
+  const userAnalyticsData =
     data?.users?.last12Months?.map((item: any) => ({
       name: item.month, // Month-Year (e.g., "Dec 2024")
-      count: item.count, // Document count
+      count: item.count, // User count
     })) || [];
 
   return (
@@ -62,7 +62,7 @@ const UserAnalytics: FC<Props> = ({ isDashboard }) => {
               height={!isDashboard ? "50%" : "100%"}
             >
               <AreaChart
-                data={analyticsData}
+                data={userAnalyticsData}
                 margin={{
                   top: 20,
                   right: 30,

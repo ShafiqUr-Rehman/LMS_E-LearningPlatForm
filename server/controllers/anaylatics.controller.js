@@ -4,41 +4,45 @@ import { generateLast12MonthsData } from "../utilis/anaylatics.generator.js";
 import Course from "../models/course.model.js";
 import OrderModel from "../models/order.model.js";
 
-// Get User Analytics -- Admins Only
-export const getUserAnalytics = async (req, res, next) => {
+// Get users -- admin
+export const getAnalyticsUsers = async (req, res, next) => {
     try {
-        const users = await generateLast12MonthsData(User);
+        const usersAnalytics = await generateLast12MonthsData(User);
+        
         res.status(200).json({
             success: true,
-            users,
+            users: usersAnalytics,
         });
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 400));
     }
-};
+}
 
-// Get Course Analytics -- Admins Only
-export const getCourseAnalytics = async (req, res, next) => {
+// Get orders -- admin
+export const getAnalyticsOrders = async (req, res, next) => {
     try {
-        const courses = await generateLast12MonthsData(Course); // Corrected `coures` to `courses`
+        const ordersAnalytics = await generateLast12MonthsData(OrderModel);
         res.status(200).json({
             success: true,
-            courses, // Corrected `coures` to `courses`
+            orders: ordersAnalytics,
         });
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 400));
     }
-};
+}
 
-// Get Orders Analytics -- Admins Only
-export const getOrderAnalytics = async (req, res, next) => {
+// Get courses -- admin
+export const getAnalyticsCourses = async (req, res, next) => {
     try {
-        const orders = await generateLast12MonthsData(OrderModel);
+        const coursesAnalytics = await generateLast12MonthsData(Course);
+
+        console.log("Generated Courses Analytics Data:", coursesAnalytics);
+        
         res.status(200).json({
             success: true,
-            orders,
+            courses: coursesAnalytics,
         });
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 400));
     }
-};
+}

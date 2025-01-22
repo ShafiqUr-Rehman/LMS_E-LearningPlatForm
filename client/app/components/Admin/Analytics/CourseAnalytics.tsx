@@ -16,14 +16,15 @@ type Props = {};
 const CourseAnalytics = (props: Props) => {
   const { data, isLoading } = useGetCourseAnalyticsQuery({});
 
-  // Prepare analytics data for the chart
-  const analyticsData: any = [];
+  // Prepare course analytics data for the chart
+  const courseAnalyticsData: any = [];
   data?.courses?.last12Months?.forEach((item: any) => {
-    analyticsData.push({
+    courseAnalyticsData.push({
       name: item.month, // Month-Year (e.g., "Dec 2024")
-      uv: item.count,   // Count of documents
+      uv: item.count,   // Count of courses
     });
   });
+  console.log("Prepared Analytics Data:", CourseAnalytics);
 
   const minValue = 0;
 
@@ -44,7 +45,7 @@ const CourseAnalytics = (props: Props) => {
 
           <div className="w-full h-[90%] flex items-center justify-center">
             <ResponsiveContainer width="90%" height="50%">
-              <BarChart width={150} height={300} data={analyticsData}>
+              <BarChart width={150} height={300} data={courseAnalyticsData}>
                 <XAxis dataKey="name">
                   <Label offset={0} position="insideBottom" />
                 </XAxis>
