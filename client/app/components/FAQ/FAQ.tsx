@@ -12,9 +12,11 @@ const FAQ = (props: Props) => {
 
   useEffect(() => {
     if (data) {
+      console.log("Fetched FAQ data:", data);
       setQuestions(data.layout.faq);
     }
   }, [data]);
+  
 
   const toggleQuestion = (id: any) => {
     setActiveQuestion(activeQuestion === id ? null : id);

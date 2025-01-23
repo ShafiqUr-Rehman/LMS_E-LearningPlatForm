@@ -180,17 +180,15 @@ export const updateAccessToken = async (req, res, next) => {
         });
 
         const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN, {
-            expiresIn: "3d",
+            expiresIn: "7d",
         });
 
         req.user = user;
         // Set the new tokens in cookies and send the response
         res.cookie("access_token", accessToken, accessTokenOptions);
         res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-        res.status(200).json({
-            success: true,
-            message: "Tokens refreshed successfully",
-        });
+        await redisClient.set(user._id, JSON.stringify(user), "EX", 604800);
+        next();
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
